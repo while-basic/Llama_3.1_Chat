@@ -16,7 +16,6 @@ def get_ai_response(messages):
         max_tokens=1024,
         stream=True,
     )
-
     print(f"{Fore.GREEN}AI: ", end="", flush=True)
     response = "".join(chunk.choices[0].delta.content or "" for chunk in completion)
     print(response, end="", flush=True)
@@ -24,14 +23,18 @@ def get_ai_response(messages):
     return response
 
 def chat():
-    messages = []
+    default_system_prompt = "You are a helpful AI assistant. Provide concise and accurate responses."
+    system_prompt = input(f"{Fore.YELLOW}Enter a system prompt (or press Enter for default): {Style.RESET_ALL}")
+    if not system_prompt:
+        system_prompt = default_system_prompt
+    
+    messages = [{"role": "system", "content": system_prompt}]
     print(f"{Fore.YELLOW}Welcome to the AI chat! Type 'exit' to end the conversation.{Style.RESET_ALL}\n")
     
     while (user_input := input(f"{Fore.CYAN}You: {Style.RESET_ALL}").lower()) != 'exit':
         messages.append({"role": "user", "content": user_input})
         messages.append({"role": "assistant", "content": get_ai_response(messages)})
         print()
-
     print(f"\n{Fore.YELLOW}Thank you for chatting! Goodbye!{Style.RESET_ALL}")
 
 if __name__ == "__main__":
